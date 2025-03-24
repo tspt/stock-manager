@@ -1,25 +1,48 @@
-// app/router/index.jsx
-import { lazy, Suspense } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
-import { MainLayout } from '../layouts/MainLayout';
-const Home = lazy(() => import('../pages/Home'));
-const PageLoading = () => <div>Loading...</div>;
+import { lazy, Suspense } from 'react'
+import { RouteObject, Navigate, createHashRouter } from 'react-router-dom'
+import BasicLayout from '../layouts/BasicLayout'
+import RouterGuard from './guard'
+import Loading from '@components/Loading'
 
-const router = createBrowserRouter([
+// 路由懒加载封装
+const lazyLoad = (component: Promise<any>) => {
+  const LazyComponent = lazy(() => component)
+  return (
+    <Suspense fallback={<Loading />}>
+      <LazyComponent />
+    </Suspense>
+  )
+}
+
+const routes: RouteObject[] = [
   {
     path: '/',
-    element: <MainLayout />,
+    element: <Navigate to="/dashboard" replace />
+  },
+  {
+    path: '/',
+    element: <BasicLayout />, // 使用布局
     children: [
-      { 
-        index: true, 
-        element: (
-          <Suspense fallback={<PageLoading />}>
-            <Home />
-          </Suspense>
-        )
+      {
+        path: 'dashboard',
+        element: <RouterGuard>{lazyLoad(import('@pages/Dashboard'))}</RouterGuard>
       }
+      // {
+      //   path: 'login',
+      //   element: lazyLoad(import('../pages/Login'))
+      // }
     ]
   }
-]);
+  // {
+  //   path: '/404',
+  //   element: lazyLoad(import('@/pages/404'))
+  // },
+  // {
+  //   path: '*',
+  //   element: <Navigate to="/404" replace />
+  // }
+]
 
-export default router;
+const router = createHashRouter(routes)
+
+export default router

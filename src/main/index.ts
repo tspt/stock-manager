@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Tray, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -33,6 +33,43 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  // 创建右键菜单模板
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: '刷新',
+      role: 'reload' // 直接复用系统刷新行为
+    },
+    {
+      label: '打开控制台',
+      click: () => {
+        mainWindow.webContents.openDevTools() // 打开开发者工具
+      }
+    }
+  ])
+
+  // 监听右键事件
+  mainWindow.webContents.on('context-menu', (e, params) => {
+    contextMenu.popup({ window: mainWindow, x: params.x, y: params.y })
+  })
+
+  // 初始化托盘（图标路径需正确）
+  let tray = new Tray(icon)
+
+  // 右键菜单
+  const trayMenu = Menu.buildFromTemplate([
+    { label: '显示窗口', click: () => mainWindow.show() },
+    { label: '退出', click: () => app.quit() }
+  ])
+
+  // 设置提示和菜单
+  tray.setToolTip('stockManager')
+  tray.setContextMenu(trayMenu)
+
+  // 左键点击切换窗口
+  tray.on('click', () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+  })
 }
 
 // This method will be called when Electron has finished

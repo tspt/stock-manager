@@ -27,6 +27,32 @@ function createWindow() {
   } else {
     mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
   }
+  const contextMenu = electron.Menu.buildFromTemplate([
+    {
+      label: "刷新",
+      role: "reload"
+      // 直接复用系统刷新行为
+    },
+    {
+      label: "打开控制台",
+      click: () => {
+        mainWindow.webContents.openDevTools();
+      }
+    }
+  ]);
+  mainWindow.webContents.on("context-menu", (e, params) => {
+    contextMenu.popup({ window: mainWindow, x: params.x, y: params.y });
+  });
+  let tray = new electron.Tray(icon);
+  const trayMenu = electron.Menu.buildFromTemplate([
+    { label: "显示窗口", click: () => mainWindow.show() },
+    { label: "退出", click: () => electron.app.quit() }
+  ]);
+  tray.setToolTip("stockManager");
+  tray.setContextMenu(trayMenu);
+  tray.on("click", () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+  });
 }
 electron.app.whenReady().then(() => {
   utils.electronApp.setAppUserModelId("com.electron");

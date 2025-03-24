@@ -1,15 +1,6 @@
-import Versions from './components/Versions'
+import { RouterProvider } from 'react-router-dom'
+import router from './router'
 
-function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
-  return (
-    <>
-      <div className="actions">
-      </div>
-      <Versions></Versions>
-    </>
-  )
+export default function App () {
+  return <RouterProvider router={router} />
 }
-
-export default App
