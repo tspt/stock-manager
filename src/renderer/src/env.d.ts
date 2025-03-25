@@ -6,4 +6,6 @@ interface GuardProps {
 
 declare module '@/router/guard'
 declare module '@pages/Dashboard'
+declare module '@pages/Home'
+declare module '@components/SvgIcon'
 declare module '@components/Loading'

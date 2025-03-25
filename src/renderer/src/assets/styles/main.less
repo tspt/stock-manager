@@ -1,5 +1,11 @@
 @import './base.less';
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
 body {
   display: flex;
   align-items: center;
@@ -13,21 +19,103 @@ body {
   height: 100%;
 }
 
-.layout-left {
-  border-right: 1px solid rgba(230, 239, 245, 1);
-}
+.layout-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
 
-.layout-top {
-  background-color: #fff;
-  border-bottom: 1px solid rgba(230, 239, 245, 1);
-}
+  .layout-logo {
+    height: 63px;
+    padding-left: 38px;
+    display: flex;
 
-.layout-content {
-  padding: 12px;
-}
+    img {
+      width: 36px;
+      height: auto;
+    }
+  }
 
-.ant-menu-item {
-  width: 100% !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
+  .layout-left-menu {
+    height: 100%;
+    border: none;
+    padding-top: 12px;
+  }
+
+  .layout-left {
+    flex: 0 0 200px !important;
+    max-width: 200px !important;
+    width: 200px !important;
+    border-right: 1px solid var(--ev-c-border-1);
+  }
+
+  .layout-top {
+    background-color: #fff;
+    border-bottom: 1px solid var(--ev-c-border-1);
+  }
+
+  .layout-content {
+    padding: 12px;
+  }
+
+  .ant-menu-item {
+    padding-left: 36px;
+    height: 50px;
+    line-height: 50px;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background-color: #fff !important;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    color: var(--ev-c-text-1);
+
+    &:hover {
+      color: var(--ev-c-text-1) !important;
+      background-color: #fff !important;
+    }
+    a::before {
+      position: absolute;
+      content: '';
+      height: 100%;
+      width: 10px;
+      left: -5px;
+      transform: scaleY(0.2);
+      opacity: 0;
+      transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+
+    .ant-menu-title-content {
+      a {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--ev-c-text-1);
+      }
+    }
+
+    &.ant-menu-item-selected {
+      color: var(--ev-theme-color) !important;
+      a::before {
+        transform: scaleY(1);
+        opacity: 1;
+        background: var(--ev-theme-color);
+      }
+
+      .ant-menu-title-content {
+        a {
+          color: var(--ev-theme-color);
+        }
+      }
+    }
+
+    .ant-menu-item-icon {
+      svg {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+      }
+    }
+  }
+
 }

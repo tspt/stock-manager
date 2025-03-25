@@ -17,20 +17,16 @@ const lazyLoad = (component: Promise<any>) => {
 const routes: RouteObject[] = [
   {
     path: '/',
-    element: <Navigate to="/dashboard" replace />
-  },
-  {
-    path: '/',
     element: <BasicLayout />, // 使用布局
     children: [
       {
-        path: 'dashboard',
+        path: '/',
         element: <RouterGuard>{lazyLoad(import('@pages/Dashboard'))}</RouterGuard>
+      },
+      {
+        path: 'home',
+        element: <RouterGuard>{lazyLoad(import('@pages/Home'))}</RouterGuard>
       }
-      // {
-      //   path: 'login',
-      //   element: lazyLoad(import('../pages/Login'))
-      // }
     ]
   }
   // {
