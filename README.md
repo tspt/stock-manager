@@ -32,3 +32,10 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+## 遇到的问题
+
+### express 跨域
+
+问题：通过axios请求时，出现http请求状态是已屏蔽：csp；
+解决方案：Electron 中 CSP (内容安全策略) 导致请求被屏蔽的完整方案，默认端口为3001，

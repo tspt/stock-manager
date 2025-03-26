@@ -2,18 +2,45 @@ import { app, shell, BrowserWindow, ipcMain, Tray, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { ExpressServer } from './express/server'
+
+let expressServer: ExpressServer
+
+// 在创建窗口前添加
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
+app.commandLine.appendSwitch('disable-site-isolation-trials')
+
+async function createExpressServer() {
+  expressServer = new ExpressServer()
+
+  try {
+    const port = await expressServer.start()
+
+    // 将端口号暴露给渲染进程
+    ipcMain.handle('get-server-port', () => port)
+
+    return true
+  } catch (error) {
+    console.error('Failed to start Express server:', error)
+    app.quit()
+    return false
+  }
+}
 
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
+    width: 1600,
     height: 670,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      // 关键安全配置
+      webSecurity: false, // 禁用同源策略（仅限开发环境）
+      allowRunningInsecureContent: true // 允许加载混合内容
     }
   })
 
@@ -75,7 +102,10 @@ function createWindow(): void {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  const serverStarted = await createExpressServer() // 启动 Express 服务
+  if (!serverStarted) return
+
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
@@ -101,10 +131,15 @@ app.whenReady().then(() => {
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
   if (process.platform !== 'darwin') {
+    await expressServer.close()
     app.quit()
   }
+})
+
+app.on('before-quit', async () => {
+  await expressServer.close()
 })
 
 // In this file you can include the rest of your app's specific main process

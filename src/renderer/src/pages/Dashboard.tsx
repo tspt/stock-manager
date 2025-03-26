@@ -1,4 +1,17 @@
+import { useState } from 'react';
+import SearchBar from '@components/SearchBar'
+import StockChart from '@components/StockChart'
+
+
 export default function Dashboard() {
-  return <div>222</div>
+
+  const [selectedStock, setSelectedStock] = useState(null);
+
+  return (
+    <div>
+      <SearchBar onSelect={setSelectedStock} />
+      {selectedStock && <StockChart data={selectedStock} />}
+    </div>
+  );
 }
 
