@@ -6,7 +6,9 @@ export class SinaDataSource implements StockDataSource {
     const response = await axios.get<string>(`${config.sina.endpoint}${code}`, {
       headers: config.sina.headers,
       timeout: config.sina.timeout
+      // responseType: 'arraybuffer'
     })
+    console.log(response.data)
 
     return this.parseData(response.data)
   }
@@ -25,6 +27,7 @@ export class SinaDataSource implements StockDataSource {
       high: parseFloat(fields[4]),
       low: parseFloat(fields[5]),
       volume: parseFloat(fields[8]),
+      amounts
       timestamp: Date.now(),
       kline: this.parseKLine(fields)
     }

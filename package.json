@@ -32,6 +32,7 @@
     "express-rate-limit": "^7.5.0",
     "highcharts": "^12.1.2",
     "highcharts-react-official": "^3.2.1",
+    "iconv-lite": "^0.6.3",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.4.0"
   },

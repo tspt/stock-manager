@@ -1,7 +1,7 @@
+// 类型定义
 interface StockDataSource {
   fetch(code: string): Promise<StockData>
 }
-
 interface StockData {
   code: string
   name: string

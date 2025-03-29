@@ -14,7 +14,7 @@ export class StockService {
     // 每5分钟清理一次缓存
     this.cacheTimer = setInterval(() => {
       this.cache.clear()
-    }, config.cacheClearTime)
+    }, 3000)
   }
 
   async getStockData(code: string): Promise<StockData> {
@@ -42,16 +42,3 @@ export class StockService {
 
 // 初始化服务实例
 export const stockService = new StockService()
-
-// 类型定义
-export interface StockData {
-  code: string
-  name: string
-  price: number
-  open: number
-  high: number
-  low: number
-  volume: number
-  timestamp: number
-  kline: Array<[number, number, number, number, number]>
-}
