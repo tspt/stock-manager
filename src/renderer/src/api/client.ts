@@ -1,4 +1,5 @@
 import axios from 'axios'
+import iconv from 'iconv-lite'
 
 // 渲染进程请求配置
 const apiBaseURL =
@@ -6,7 +7,13 @@ const apiBaseURL =
 
 const apiClient = axios.create({
   baseURL: apiBaseURL,
-  timeout: 10000
+  timeout: 10000,
+  responseType: 'arraybuffer', // 接收二进制数据
+  transformResponse: [
+    (data) => {
+      return iconv.decode(Buffer.from(data), 'GBK')
+    }
+  ]
 })
 
 export const getStockData = (code: string) => {

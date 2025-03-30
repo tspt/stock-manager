@@ -6,9 +6,11 @@ const router = Router()
 router.get('/:code', async (req, res) => {
   try {
     // const { code } = req.query;
-    const data = await stockService.getStockData(req.params.code)
-    console.log(data)
-    res.json(data)
+    const decodedData = await stockService.getStockData(req.params.code)
+    // console.log(decodedData)
+    // 设置正确的内容类型
+    // res.header('Content-Type', 'text/plain; charset=UTF-8')
+    res.json(decodedData)
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch stock data' })
   }
