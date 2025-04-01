@@ -15326,36 +15326,81 @@ class SinaDataSource {
   async fetch(code) {
     const response2 = await axios.get(`${config.sina.endpoint}${code}`, {
       headers: config.sina.headers,
-      timeout: config.sina.timeout,
-      responseType: "arraybuffer"
+      timeout: config.sina.timeout
+      // responseType: 'arraybuffer'
     });
-    console.log(response2.data);
     const decodedData = require$$2$2.decode(response2.data, "GBK");
-    console.log("---------------");
     console.log(decodedData);
     return this.parseData(decodedData);
   }
   parseData(data) {
-    const match = data.match(/="(.+?)"/);
-    if (!match) throw new Error("无效的数据格式");
-    const fields = match[1].split(",");
+    const cleanedData = data.replace(/"/g, "").replace(/var hq_str_/g, "").trim();
+    const [codePart, ...values] = cleanedData.split("=");
+    const code = codePart.split("_").pop() || "";
+    const fields = values.join("").split(",");
+    const timestamp = (/* @__PURE__ */ new Date(fields[30] + " " + fields[31])).getTime();
     return {
-      code: fields[0],
+      code,
       name: fields[0],
-      price: parseFloat(fields[3]),
       open: parseFloat(fields[1]),
+      close: parseFloat(fields[2]),
+      price: parseFloat(fields[3]),
       high: parseFloat(fields[4]),
       low: parseFloat(fields[5]),
       volume: parseFloat(fields[8]),
-      // amounts
-      timestamp: Date.now(),
-      kline: this.parseKLine(fields)
+      amounts: parseFloat(fields[9]),
+      buyer: [
+        {
+          price: parseFloat(fields[10]),
+          volume: parseFloat(fields[11])
+        },
+        {
+          price: parseFloat(fields[12]),
+          volume: parseFloat(fields[13])
+        },
+        {
+          price: parseFloat(fields[14]),
+          volume: parseFloat(fields[15])
+        },
+        {
+          price: parseFloat(fields[16]),
+          volume: parseFloat(fields[17])
+        },
+        {
+          price: parseFloat(fields[18]),
+          volume: parseFloat(fields[19])
+        }
+      ],
+      seller: [
+        {
+          price: parseFloat(fields[20]),
+          volume: parseFloat(fields[21])
+        },
+        {
+          price: parseFloat(fields[22]),
+          volume: parseFloat(fields[23])
+        },
+        {
+          price: parseFloat(fields[24]),
+          volume: parseFloat(fields[25])
+        },
+        {
+          price: parseFloat(fields[26]),
+          volume: parseFloat(fields[27])
+        },
+        {
+          price: parseFloat(fields[28]),
+          volume: parseFloat(fields[29])
+        }
+      ],
+      timestamp,
+      kline: this.parseKLine(fields, timestamp)
     };
   }
-  parseKLine(fields) {
+  parseKLine(fields, timestamp) {
     return [
       [
-        Date.now(),
+        timestamp,
         parseFloat(fields[1]),
         parseFloat(fields[4]),
         parseFloat(fields[5]),

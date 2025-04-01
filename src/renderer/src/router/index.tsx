@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react'
 import { RouteObject, Navigate, createHashRouter } from 'react-router-dom'
 import BasicLayout from '../layouts/BasicLayout'
 import RouterGuard from './guard'
-import Loading from '@components/Loading'
+import Loading from '@/components/Loading'
 
 // 路由懒加载封装
 const lazyLoad = (component: Promise<any>) => {
@@ -21,11 +21,11 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <RouterGuard>{lazyLoad(import('@pages/Dashboard'))}</RouterGuard>
+        element: <RouterGuard>{lazyLoad(import('@/pages/Dashboard'))}</RouterGuard>
       },
       {
         path: 'home',
-        element: <RouterGuard>{lazyLoad(import('@pages/Home'))}</RouterGuard>
+        element: <RouterGuard>{lazyLoad(import('@/pages/Home'))}</RouterGuard>
       }
     ]
   }

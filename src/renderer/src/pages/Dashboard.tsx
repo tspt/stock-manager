@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import SearchBar from '@components/SearchBar'
-import StockChart from '@components/StockChart'
+import SearchBar from '@/components/SearchBar'
+import StockChart from '@/components/StockChart'
 
 
 export default function Dashboard() {
@@ -11,6 +11,12 @@ export default function Dashboard() {
     <div>
       <SearchBar onSelect={setSelectedStock} />
       {selectedStock && <StockChart data={selectedStock} />}
+
+      {/* <StockChart
+        option={yourOption}
+        style={{ height: 500 }}
+        loading={isLoading}
+      /> */}
     </div>
   );
 }
