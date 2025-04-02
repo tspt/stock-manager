@@ -7,16 +7,10 @@ const apiBaseURL =
 
 const apiClient = axios.create({
   baseURL: apiBaseURL,
-  timeout: 10000,
-  responseType: 'arraybuffer', // 接收二进制数据
-  transformResponse: [
-    (data) => {
-      return iconv.decode(Buffer.from(data), 'GBK')
-    }
-  ]
+  timeout: 10000
 })
 
 export const getStockData = (code: string) => {
-  // return apiClient.get(`/stock?code=${code}`)
-  return apiClient.get(`/stock/${code}`)
+  return apiClient.get(`/stock/getList?code=${code}`)
+  // return apiClient.get(`/stock/${code}`)
 }

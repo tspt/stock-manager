@@ -3,10 +3,10 @@ import { stockService } from '../services/stock.service'
 
 const router = Router()
 
-router.get('/:code', async (req, res) => {
+router.get('/getList', async (req, res) => {
   try {
-    // const { code } = req.query;
-    const decodedData = await stockService.getStockData(req.params.code)
+    const { code } = req.query
+    const decodedData = await stockService.getStockData(code)
     // console.log(decodedData)
     // 设置正确的内容类型
     // res.header('Content-Type', 'text/plain; charset=UTF-8')

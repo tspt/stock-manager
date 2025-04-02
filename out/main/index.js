@@ -15326,11 +15326,10 @@ class SinaDataSource {
   async fetch(code) {
     const response2 = await axios.get(`${config.sina.endpoint}${code}`, {
       headers: config.sina.headers,
-      timeout: config.sina.timeout
-      // responseType: 'arraybuffer'
+      timeout: config.sina.timeout,
+      responseType: "arraybuffer"
     });
-    const decodedData = require$$2$2.decode(response2.data, "GBK");
-    console.log(decodedData);
+    const decodedData = require$$2$2.decode(Buffer.from(response2.data), "GBK");
     return this.parseData(decodedData);
   }
   parseData(data) {
@@ -15440,9 +15439,10 @@ class StockService {
 }
 const stockService = new StockService();
 const router = expressExports.Router();
-router.get("/:code", async (req, res) => {
+router.get("/getList", async (req, res) => {
   try {
-    const decodedData = await stockService.getStockData(req.params.code);
+    const { code } = req.query;
+    const decodedData = await stockService.getStockData(code);
     res.json(decodedData);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch stock data" });

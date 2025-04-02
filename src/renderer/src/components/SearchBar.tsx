@@ -8,6 +8,7 @@ export default function SearchBar({ onSelect }: any) {
   const handleSearch = async () => {
     try {
       const response = await getStockData(`sh${input}`);
+      console.log('Search result:', response.data);
       // 处理返回数据，这里需要根据实际API响应结构解析
       const stockInfo = parseStockData(response.data);
       onSelect(stockInfo);

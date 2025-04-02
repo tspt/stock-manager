@@ -6,13 +6,12 @@ export class SinaDataSource implements StockDataSource {
   async fetch(code: string) {
     const response = await axios.get(`${config.sina.endpoint}${code}`, {
       headers: config.sina.headers,
-      timeout: config.sina.timeout
-      // responseType: 'arraybuffer'
+      timeout: config.sina.timeout,
+      responseType: 'arraybuffer'
     })
 
     // GBK转UTF-8
-    const decodedData = iconv.decode(response.data, 'GBK')
-    console.log(decodedData)
+    const decodedData = iconv.decode(Buffer.from(response.data), 'GBK')
     return this.parseData(decodedData)
   }
 

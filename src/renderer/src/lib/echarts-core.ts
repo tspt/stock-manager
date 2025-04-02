@@ -12,6 +12,24 @@ import {
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 
+import type { BarSeriesOption, LineSeriesOption, PieSeriesOption } from 'echarts/charts'
+import type {
+  TitleComponentOption,
+  TooltipComponentOption,
+  GridComponentOption,
+  LegendComponentOption
+} from 'echarts/components'
+
+export type ECOption = echarts.ComposeOption<
+  | BarSeriesOption
+  | LineSeriesOption
+  | PieSeriesOption
+  | TitleComponentOption
+  | TooltipComponentOption
+  | GridComponentOption
+  | LegendComponentOption
+>
+
 // 统一注册组件
 echarts.use([
   LegendComponent,

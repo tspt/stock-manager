@@ -7,7 +7,7 @@ export function registerRoutes(app: Express): void {
     res.json({ status: 'OK', timestamp: Date.now() })
   })
 
-  // 业务路由模块
+  // 股票相关路由
   app.use('/api/stock', stockRouter)
 
   // 404 处理
