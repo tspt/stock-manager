@@ -15,7 +15,37 @@ export class SinaDataSource implements StockDataSource {
     return this.parseData(decodedData)
   }
 
-  private parseData(data: string): StockData {
+  private parseData(data: string): StockData[] {
+    console.log(data)
+    // 解析数据（示例：假设返回文本为 var hq_str_sh601006="数据";）
+    const resultData = data
+      .trim()
+      .split('\n')
+      .map((line) => {
+        const cleanedData = line
+          .replace(/"/g, '')
+          .replace(/var hq_str_/g, '')
+          .trim()
+
+        // 示例数据格式：sh600519=大秦铁路,6.36,6.35,...;
+        const [codePart, ...values] = cleanedData.split('=')
+        const code = codePart.split('_').pop() || ''
+        const fields = values.join('').split(',')
+
+        return {
+          code: code,
+          name: fields[0],
+          price: parseFloat(fields[3]),
+          rate: (
+            ((parseFloat(fields[3]) - parseFloat(fields[2])) / parseFloat(fields[2])) *
+            100
+          ).toFixed(2)
+        }
+      })
+    return resultData
+  }
+
+  private parseFullData(data: string): StockFullData {
     // 清洗非法字符
     const cleanedData = data
       .replace(/"/g, '')

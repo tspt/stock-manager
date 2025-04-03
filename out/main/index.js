@@ -15333,6 +15333,22 @@ class SinaDataSource {
     return this.parseData(decodedData);
   }
   parseData(data) {
+    console.log(data);
+    const resultData = data.trim().split("\n").map((line) => {
+      const cleanedData = line.replace(/"/g, "").replace(/var hq_str_/g, "").trim();
+      const [codePart, ...values] = cleanedData.split("=");
+      const code = codePart.split("_").pop() || "";
+      const fields = values.join("").split(",");
+      return {
+        code,
+        name: fields[0],
+        price: parseFloat(fields[3]),
+        rate: ((parseFloat(fields[3]) - parseFloat(fields[2])) / parseFloat(fields[2]) * 100).toFixed(2)
+      };
+    });
+    return resultData;
+  }
+  parseFullData(data) {
     const cleanedData = data.replace(/"/g, "").replace(/var hq_str_/g, "").trim();
     const [codePart, ...values] = cleanedData.split("=");
     const code = codePart.split("_").pop() || "";
@@ -15419,7 +15435,7 @@ class StockService {
       this.cache.clear();
     }, 3e3);
   }
-  async getStockData(code) {
+  async getStockList(code) {
     const source = config.defaultSource;
     const cacheKey = `${source}:${code}`;
     try {
@@ -15442,7 +15458,7 @@ const router = expressExports.Router();
 router.get("/getList", async (req, res) => {
   try {
     const { code } = req.query;
-    const decodedData = await stockService.getStockData(code);
+    const decodedData = await stockService.getStockList(code);
     res.json(decodedData);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch stock data" });

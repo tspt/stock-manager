@@ -1,16 +1,13 @@
 :root {
   --ev-theme-color: rgba(45, 96, 255, 1);
-
-  --ev-c-border-1: rgba(230, 239, 245, 1);
-
-  --ev-c-text-1: rgba(177, 177, 177, 1);
-
+  --ev-border-1: rgba(230, 239, 245, 1);
+  --ev-text-1: rgba(177, 177, 177, 1);
   --ev-button-alt-border: transparent;
-}
 
-:root {
-  --color-background: var(--ev-c-black);
-  --color-text: var(--ev-c-text-1);
+  --ev-up-color-1: rgb(244, 67, 54);
+  --ev-up-color-2: rgba(244, 67, 54, .1);
+  --ev-down-color-1: rgb(38, 166, 154);
+  --ev-down-color-2: rgba(38, 166, 154, .1);
 }
 
 *,
@@ -29,6 +26,29 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 全局滚动条 */
+::-webkit-scrollbar {
+  width: 8px; /* 垂直滚动条宽度 */
+  height: 8px; /* 水平滚动条高度 */
+}
+
+/* 轨道背景 */
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+/* 滑块 */
+::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 10px;
+}
+
+/* 滑块悬停效果 */
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
 }
 
 * {

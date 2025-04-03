@@ -45,12 +45,12 @@ body {
     flex: 0 0 200px !important;
     max-width: 200px !important;
     width: 200px !important;
-    border-right: 1px solid var(--ev-c-border-1);
+    border-right: 1px solid var(--ev-border-1);
   }
 
   .layout-top {
     background-color: #fff;
-    border-bottom: 1px solid var(--ev-c-border-1);
+    border-bottom: 1px solid var(--ev-border-1);
   }
 
   .layout-content {
@@ -69,10 +69,10 @@ body {
     align-items: center;
     justify-content: flex-start;
     position: relative;
-    color: var(--ev-c-text-1);
+    color: var(--ev-text-1);
 
     &:hover {
-      color: var(--ev-c-text-1) !important;
+      color: var(--ev-text-1) !important;
       background-color: #fff !important;
     }
 
@@ -91,7 +91,7 @@ body {
       a {
         font-size: 16px;
         font-weight: 500;
-        color: var(--ev-c-text-1);
+        color: var(--ev-text-1);
       }
     }
 
@@ -124,9 +124,6 @@ body {
     background-color: #fff;
   }
 
-  .ant-list {
-    width: 260px;
-  }
 }
 
 
@@ -135,9 +132,51 @@ body {
   height: 100%;
   display: flex;
   .stock-left-part {
-    border-right: 1px solid var(--ev-c-border-1);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--ev-border-1);
+    .stock-left-top {
+      height: 60px;
+      flex: none;
+      border-bottom: 1px solid var(--ev-border-1);
+    }
+    .ant-list {
+      flex: auto;
+      overflow: auto;
+      width: 260px;
+      .ant-list-item {
+        padding: 12px;
+        cursor: pointer;
+      }
+    }
+    .up-status {
+      background-color: var(--ev-up-color-2);
+      .stock-rate {
+        color: var(--ev-up-color-1);
+      }
+    }
+    .down-status {
+      background-color: var(--ev-down-color-2);
+      .stock-rate {
+        color: var(--ev-down-color-1);
+      }
+    }
+    .stock-name {
+      width: 85px;
+      flex: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .stock-price {
+      width: 70px;
+      flex: none;
+    }
+    .stock-rate {
+      width: 60px;
+      flex: none;
+      font-weight: bold;
+    }
   }
-  .stock-left-top {
-    height: 60px;
-  }
+
 }

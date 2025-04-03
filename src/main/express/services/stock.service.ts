@@ -17,7 +17,7 @@ export class StockService {
     }, 3000)
   }
 
-  async getStockData(code: string): Promise<StockData> {
+  async getStockList(code: string): Promise<StockData[]> {
     const source = config.defaultSource
     const cacheKey = `${source}:${code}`
 

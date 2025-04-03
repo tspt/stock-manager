@@ -1,5 +1,4 @@
 import axios from 'axios'
-import iconv from 'iconv-lite'
 
 // 渲染进程请求配置
 const apiBaseURL =
@@ -10,7 +9,7 @@ const apiClient = axios.create({
   timeout: 10000
 })
 
-export const getStockData = (code: string) => {
+export const getStockList = (code: string) => {
   return apiClient.get(`/stock/getList?code=${code}`)
   // return apiClient.get(`/stock/${code}`)
 }

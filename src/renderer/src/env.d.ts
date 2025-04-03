@@ -16,6 +16,13 @@ interface ReactEChartsProps {
   }
 }
 
+interface StockData {
+  code: string
+  name: string
+  price: number
+  rate: number
+}
+
 interface EchartsWrapperProps extends ReactEChartsProps {
   option: ECOption
   style?: React.CSSProperties

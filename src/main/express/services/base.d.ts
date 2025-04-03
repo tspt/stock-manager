@@ -1,8 +1,8 @@
 // 类型定义
 interface StockDataSource {
-  fetch(code: string): Promise<StockData>
+  fetch(code: string): Promise<StockFullData | StockData[]>
 }
-interface StockData {
+interface StockFullData {
   code: string
   name: string
   price: number
@@ -22,4 +22,10 @@ interface StockData {
     volume: number
   }>
   kline: Array<[number, number, number, number, number]>
+}
+interface StockData {
+  code: string
+  name: string
+  price: number
+  rate: string
 }

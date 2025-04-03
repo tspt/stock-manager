@@ -6,7 +6,7 @@ const router = Router()
 router.get('/getList', async (req, res) => {
   try {
     const { code } = req.query
-    const decodedData = await stockService.getStockData(code)
+    const decodedData = await stockService.getStockList(code)
     // console.log(decodedData)
     // 设置正确的内容类型
     // res.header('Content-Type', 'text/plain; charset=UTF-8')
