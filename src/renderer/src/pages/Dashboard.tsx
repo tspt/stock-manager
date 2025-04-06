@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Button, List } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import SearchBar from '@/components/SearchBar'
-import StockChart from '@/components/stock/StockChart'
-import { getStockList } from '../api/client';
+import Chart from '@/components/common/Chart'
+import { stockInstance } from '@/utils/stock'
+import { getStockList, getStockTimeShare, getStockCandlestick } from '../api/stock';
 
 const Dashboard = () => {
 
@@ -13,6 +13,7 @@ const Dashboard = () => {
 
   // 可配置的股票代码列表
   const stockCodes = [
+    "sh000001",
     "sh603058",
     "sz000981",
     "sz300129",
@@ -42,51 +43,7 @@ const Dashboard = () => {
     "sh601388",
   ]
 
-  const [stockList, setStockList] = useState([]);
-
-  const getStockData = async (code) => {
-    try {
-      const response = await getStockList(code);
-      console.log('Search result:', response.data);
-      setStockList(response.data);
-    } catch (error) {
-      console.error('Search failed:', error);
-    }
-  };
-
-
-  useEffect(() => {
-    // 模拟异步数据获取
-    // setTimeout(() => {
-    //   const newOption = {
-    //     title: {
-    //       text: '季度销售数据',
-    //       left: 'center'
-    //     },
-    //     tooltip: {
-    //       trigger: 'axis'
-    //     },
-    //     xAxis: {
-    //       type: 'category',
-    //       data: ['Q1', 'Q2', 'Q3', 'Q4']
-    //     },
-    //     yAxis: {
-    //       type: 'value'
-    //     },
-    //     series: [{
-    //       type: 'bar',
-    //       data: [145, 210, 189, 245],
-    //       name: '销售额'
-    //     }]
-    //   };
-    //   setOption(newOption);
-    // }, 1000);
-    const interval = setInterval(() => getStockData(stockCodes), 10000000);
-    getStockData(stockCodes); // 初始加载
-    return () => clearInterval(interval); // 清理定时器
-  }, []);
-
-  const cache = [
+  const [stockList, setStockList] = useState([
     {
       "code": "sh603058",
       "name": "永吉股份",
@@ -237,315 +194,50 @@ const Dashboard = () => {
       "price": 2.64,
       "rate": "10.00"
     }
-  ]
+  ]); // 股票列表
+  const [stockCode, setStockCode] = useState(''); // 股票代码
 
-  // const data = [
-  //   {
-  //     stockName: 'Apple Inc.',
-  //     price: '$150.00',
-  //     rate: '+10.50%'
-  //   },
-  //   {
-  //     stockName: 'Microsoft Corp.',
-  //     price: '$300.00',
-  //     rate: '-1.25%'
-  //   },
-  //   {
-  //     stockName: 'Amazon.com Inc.',
-  //     price: '$250.00',
-  //     rate: '+3.75%'
-  //   },
-  //   {
-  //     stockName: 'Tesla Inc.',
-  //     price: '$800.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'Alphabet Inc.',
-  //     price: '$1200.00',
-  //     rate: '+1.00%'
-  //   },
-  //   {
-  //     stockName: 'Facebook Inc.',
-  //     price: '$200.00',
-  //     rate: '-2.00%'
-  //   },
-  //   {
-  //     stockName: 'NVIDIA Corp.',
-  //     price: '$100.00',
-  //     rate: '+0.75%'
-  //   },
-  //   {
-  //     stockName: 'Intel Corp.',
-  //     price: '$180.00',
-  //     rate: '-1.50%'
-  //   },
-  //   {
-  //     stockName: 'Oracle Corp.',
-  //     price: '$220.00',
-  //     rate: '+0.25%'
-  //   },
-  //   {
-  //     stockName: 'IBM Corp.',
-  //     price: '$160.00',
-  //     rate: '-1.75%'
-  //   },
-  //   {
-  //     stockName: 'Adobe Inc.',
-  //     price: '$140.00',
-  //     rate: '+2.25%'
-  //   },
-  //   {
-  //     stockName: 'Cisco Systems Inc.',
-  //     price: '$130.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'SAP SE',
-  //     price: '$110.00',
-  //     rate: '+1.25%'
-  //   },
-  //   {
-  //     stockName: 'Microsoft Corp.',
-  //     price: '$300.00',
-  //     rate: '-1.25%'
-  //   },
-  //   {
-  //     stockName: 'Amazon.com Inc.',
-  //     price: '$250.00',
-  //     rate: '+3.75%'
-  //   },
-  //   {
-  //     stockName: 'Tesla Inc.',
-  //     price: '$800.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'Alphabet Inc.',
-  //     price: '$1200.00',
-  //     rate: '+1.00%'
-  //   },
-  //   {
-  //     stockName: 'Facebook Inc.',
-  //     price: '$200.00',
-  //     rate: '-2.00%'
-  //   },
-  //   {
-  //     stockName: 'NVIDIA Corp.',
-  //     price: '$100.00',
-  //     rate: '+0.75%'
-  //   },
-  //   {
-  //     stockName: 'Intel Corp.',
-  //     price: '$180.00',
-  //     rate: '-1.50%'
-  //   },
-  //   {
-  //     stockName: 'Oracle Corp.',
-  //     price: '$220.00',
-  //     rate: '+0.25%'
-  //   },
-  //   {
-  //     stockName: 'IBM Corp.',
-  //     price: '$160.00',
-  //     rate: '-1.75%'
-  //   },
-  //   {
-  //     stockName: 'Adobe Inc.',
-  //     price: '$140.00',
-  //     rate: '+2.25%'
-  //   },
-  //   {
-  //     stockName: 'Cisco Systems Inc.',
-  //     price: '$130.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'SAP SE',
-  //     price: '$110.00',
-  //     rate: '+1.25%'
-  //   },
-  //   {
-  //     stockName: 'Microsoft Corp.',
-  //     price: '$300.00',
-  //     rate: '-1.25%'
-  //   },
-  //   {
-  //     stockName: 'Amazon.com Inc.',
-  //     price: '$250.00',
-  //     rate: '+3.75%'
-  //   },
-  //   {
-  //     stockName: 'Tesla Inc.',
-  //     price: '$800.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'Alphabet Inc.',
-  //     price: '$1200.00',
-  //     rate: '+1.00%'
-  //   },
-  //   {
-  //     stockName: 'Facebook Inc.',
-  //     price: '$200.00',
-  //     rate: '-2.00%'
-  //   },
-  //   {
-  //     stockName: 'NVIDIA Corp.',
-  //     price: '$100.00',
-  //     rate: '+0.75%'
-  //   },
-  //   {
-  //     stockName: 'Intel Corp.',
-  //     price: '$180.00',
-  //     rate: '-1.50%'
-  //   },
-  //   {
-  //     stockName: 'Oracle Corp.',
-  //     price: '$220.00',
-  //     rate: '+0.25%'
-  //   },
-  //   {
-  //     stockName: 'IBM Corp.',
-  //     price: '$160.00',
-  //     rate: '-1.75%'
-  //   },
-  //   {
-  //     stockName: 'Adobe Inc.',
-  //     price: '$140.00',
-  //     rate: '+2.25%'
-  //   },
-  //   {
-  //     stockName: 'Cisco Systems Inc.',
-  //     price: '$130.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'SAP SE',
-  //     price: '$110.00',
-  //     rate: '+1.25%'
-  //   },
-  //   {
-  //     stockName: 'Microsoft Corp.',
-  //     price: '$300.00',
-  //     rate: '-1.25%'
-  //   },
-  //   {
-  //     stockName: 'Amazon.com Inc.',
-  //     price: '$250.00',
-  //     rate: '+3.75%'
-  //   },
-  //   {
-  //     stockName: 'Tesla Inc.',
-  //     price: '$800.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'Alphabet Inc.',
-  //     price: '$1200.00',
-  //     rate: '+1.00%'
-  //   },
-  //   {
-  //     stockName: 'Facebook Inc.',
-  //     price: '$200.00',
-  //     rate: '-2.00%'
-  //   },
-  //   {
-  //     stockName: 'NVIDIA Corp.',
-  //     price: '$100.00',
-  //     rate: '+0.75%'
-  //   },
-  //   {
-  //     stockName: 'Intel Corp.',
-  //     price: '$180.00',
-  //     rate: '-1.50%'
-  //   },
-  //   {
-  //     stockName: 'Oracle Corp.',
-  //     price: '$220.00',
-  //     rate: '+0.25%'
-  //   },
-  //   {
-  //     stockName: 'IBM Corp.',
-  //     price: '$160.00',
-  //     rate: '-1.75%'
-  //   },
-  //   {
-  //     stockName: 'Adobe Inc.',
-  //     price: '$140.00',
-  //     rate: '+2.25%'
-  //   },
-  //   {
-  //     stockName: 'Cisco Systems Inc.',
-  //     price: '$130.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'SAP SE',
-  //     price: '$110.00',
-  //     rate: '+1.25%'
-  //   },
-  //   {
-  //     stockName: 'Microsoft Corp.',
-  //     price: '$300.00',
-  //     rate: '-1.25%'
-  //   },
-  //   {
-  //     stockName: 'Amazon.com Inc.',
-  //     price: '$250.00',
-  //     rate: '+3.75%'
-  //   },
-  //   {
-  //     stockName: 'Tesla Inc.',
-  //     price: '$800.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'Alphabet Inc.',
-  //     price: '$1200.00',
-  //     rate: '+1.00%'
-  //   },
-  //   {
-  //     stockName: 'Facebook Inc.',
-  //     price: '$200.00',
-  //     rate: '-2.00%'
-  //   },
-  //   {
-  //     stockName: 'NVIDIA Corp.',
-  //     price: '$100.00',
-  //     rate: '+0.75%'
-  //   },
-  //   {
-  //     stockName: 'Intel Corp.',
-  //     price: '$180.00',
-  //     rate: '-1.50%'
-  //   },
-  //   {
-  //     stockName: 'Oracle Corp.',
-  //     price: '$220.00',
-  //     rate: '+0.25%'
-  //   },
-  //   {
-  //     stockName: 'IBM Corp.',
-  //     price: '$160.00',
-  //     rate: '-1.75%'
-  //   },
-  //   {
-  //     stockName: 'Adobe Inc.',
-  //     price: '$140.00',
-  //     rate: '+2.25%'
-  //   },
-  //   {
-  //     stockName: 'Cisco Systems Inc.',
-  //     price: '$130.00',
-  //     rate: '-0.50%'
-  //   },
-  //   {
-  //     stockName: 'SAP SE',
-  //     price: '$110.00',
-  //     rate: '+1.25%'
-  //   }
-  // ]
+  // 获取股票列表数据
+  const getStockListData = async (code) => {
+    try {
+      const response = await getStockList({ code: code.join(',') });
+      setStockList(response.data.data);
+    } catch (error) {
+      console.error('getStockList failed:', error);
+    }
+  };
+
+  // 获取股票分时数据
+  const getStockTimeShareData = async (code) => {
+    try {
+      const response = await getStockTimeShare({ code: code });
+      setStockList(response.data.data);
+    } catch (error) {
+      console.error('getStockTimeShare failed:', error);
+    }
+  };
+
+
+  // useEffect(() => {
+  //   // 定时更新股票数据
+  //   const interval = setInterval(() => getStockListData(stockCodes), 100000000);
+  //   getStockListData(stockCodes); // 初始加载
+  //   return () => clearInterval(interval); // 清理定时器
+  // }, []);
+
+  getStockCandlestick({
+    type: 'day',
+    code: 'sh603058',
+  });
+
+  // useEffect(() => {
+  //   // 定时更新股票数据
+  //   const interval = setInterval(() => getStockTimeShareData(stockCode), 100000000);
+  //   getStockTimeShareData(stockCode); // 初始加载
+
+  //   // setOption(newOption);
+  //   return () => clearInterval(interval); // 清理定时器
+  // }, []);
 
   return (
     <div className='stock-container'>
@@ -568,7 +260,7 @@ const Dashboard = () => {
       </div>
       <div className='stock-right-part'>
         {/* <SearchBar onSelect={setSelectedStock} /> */}
-        <StockChart
+        <Chart
           option={option}
           style={{ height: '60vh' }}
           onEvents={{
@@ -579,9 +271,9 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* {selectedStock && <StockChart data={selectedStock} />} */}
+      {/* {selectedStock && <Chart data={selectedStock} />} */}
 
-      {/* <StockChart
+      {/* <Chart
         option={yourOption}
         style={{ height: 500 }}
         loading={isLoading}

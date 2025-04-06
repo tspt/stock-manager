@@ -1,8 +1,8 @@
 import { lazy, Suspense } from 'react'
 import { RouteObject, Navigate, createHashRouter } from 'react-router-dom'
-import BasicLayout from '../layouts/BasicLayout'
+import BasicLayout from '@/components/layout/BasicLayout'
 import RouterGuard from './guard'
-import Loading from '@/components/Loading'
+import Loading from '@/components/common/Loading'
 
 // 路由懒加载封装
 const lazyLoad = (component: Promise<any>) => {

@@ -12,7 +12,7 @@ export class SinaDataSource implements StockDataSource {
 
     // GBK转UTF-8
     const decodedData = iconv.decode(Buffer.from(response.data), 'GBK')
-    return this.parseData(decodedData)
+    return this.parseData(decodedData); // { code: 0, data: this.parseData(decodedData) }
   }
 
   private parseData(data: string): StockData[] {

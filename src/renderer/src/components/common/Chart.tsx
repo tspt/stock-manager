@@ -49,9 +49,9 @@
 
 import { forwardRef } from 'react';
 import ReactEChartsCore from 'echarts-for-react/lib/core';
-import echarts from '@/lib/echarts-core';
+import echarts from '@/lib/echarts/echarts-core';
 
-const StockChart = forwardRef<ReactEChartsCore, EchartsWrapperProps>(
+const Chart = forwardRef<ReactEChartsCore, EchartsWrapperProps>(
   ({ option, style = { height: 400 }, ...props }, ref) => {
     return (
       <ReactEChartsCore
@@ -59,7 +59,7 @@ const StockChart = forwardRef<ReactEChartsCore, EchartsWrapperProps>(
         echarts={echarts}
         option={option}
         style={style}
-        opts={{ renderer: 'canvas' }}
+        opts={{ renderer: 'canvas', width: 400, height: 400 }}
         notMerge={true}
         {...props}
       />
@@ -67,6 +67,6 @@ const StockChart = forwardRef<ReactEChartsCore, EchartsWrapperProps>(
   }
 );
 
-StockChart.displayName = 'StockChart';
+Chart.displayName = 'Chart';
 
-export default StockChart;
+export default Chart;

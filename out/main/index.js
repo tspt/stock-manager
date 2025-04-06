@@ -15275,13 +15275,24 @@ var expressExports = requireExpress();
 const express = /* @__PURE__ */ getDefaultExportFromCjs(expressExports);
 const config = {
   port: 3001,
-  defaultSource: process.env.NODE_ENV === "production" ? "sina" : "sina",
+  cacheClearTime: 5 * 60 * 1e3,
+  // defaultSource: process.env.NODE_ENV === 'production' ? 'sina' : 'sina',
+  source: ["sina", "tencent"],
   sina: {
     endpoint: "https://hq.sinajs.cn/list=",
     timeout: 5e3,
     headers: {
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
       Referer: "http://finance.sina.com.cn"
+    }
+  },
+  tencent: {
+    endpoint: "https://proxy.finance.qq.com/ifzqgtimg/appstock/app/newfqkline/get",
+    //endpoint: 'https://qt.gtimg.cn/q=',
+    timeout: 5e3,
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+      Referer: "https://gu.qq.com"
     }
   }
 };
@@ -15424,8 +15435,76 @@ class SinaDataSource {
     ];
   }
 }
+class TencentDataSource {
+  async fetchCandlestick(params) {
+    console.log(params);
+    const response2 = await axios.get(
+      `${config.tencent.endpoint}?_var=kline_${params.type}&param=${params.code},${params.type},,,2000,&r=${Math.random()}`,
+      {
+        headers: config.tencent.headers,
+        timeout: config.tencent.timeout
+        // responseType: 'arraybuffer'
+      }
+    );
+    console.log(response2.data);
+    return response2.data;
+  }
+  // async fetchTimeShare(code: string) {
+  //   const response = await axios.get(`${config.tencent.endpoint}${code}`, {
+  //     headers: config.tencent.headers,
+  //     timeout: config.tencent.timeout,
+  //     responseType: 'arraybuffer'
+  //   })
+  //   // GBK转UTF-8
+  //   const decodedData = iconv.decode(Buffer.from(response.data), 'GBK')
+  //   return this.parseTimeShare(decodedData) // { code: 0, data: this.parseData(decodedData) }
+  // }
+  // private parseCandlestick(data: string) {
+  //   const lines = data.split('\n')
+  //   const result: StockFullData[] = []
+  //   for (let i = 1; i < lines.length - 1; i++) {
+  //     const [code, name, price, close, open, high, low, volume, amounts, timestamp, buyer, seller] =
+  //       lines[i].split(',')
+  //     result.push({
+  //       code,
+  //       name,
+  //       price: parseFloat(price),
+  //       close: parseFloat(close),
+  //       open: parseFloat(open),
+  //       high: parseFloat(high),
+  //       low: parseFloat(low),
+  //       volume: parseFloat(volume),
+  //       amounts: parseFloat(amounts),
+  //       timestamp: parseInt(timestamp)
+  //     })
+  //   }
+  //   return result
+  // }
+  // private parseTimeShare(data: string) {
+  //   const lines = data.split('\n')
+  //   const result: StockFullData[] = []
+  //   for (let i = 1; i < lines.length - 1; i++) {
+  //     const [code, name, price, close, open, high, low, volume, amounts, timestamp, buyer, seller] =
+  //       lines[i].split(',')
+  //     result.push({
+  //       code,
+  //       name,
+  //       price: parseFloat(price),
+  //       close: parseFloat(close),
+  //       open: parseFloat(open),
+  //       high: parseFloat(high),
+  //       low: parseFloat(low),
+  //       volume: parseFloat(volume),
+  //       amounts: parseFloat(amounts),
+  //       timestamp: parseInt(timestamp)
+  //     })
+  //   }
+  //   return result
+  // }
+}
 const dataSources = {
-  sina: new SinaDataSource()
+  sina: new SinaDataSource(),
+  tencent: new TencentDataSource()
 };
 class StockService {
   cache = /* @__PURE__ */ new Map();
@@ -15433,14 +15512,52 @@ class StockService {
   constructor() {
     this.cacheTimer = setInterval(() => {
       this.cache.clear();
-    }, 3e3);
+    }, config.cacheClearTime);
   }
   async getStockList(code) {
-    const source = config.defaultSource;
+    const source = config.source[0];
     const cacheKey = `${source}:${code}`;
     try {
       if (!this.cache.has(cacheKey)) {
+        if (!dataSources[source].fetch) {
+          throw new Error(`Data source "${source}" is not defined`);
+        }
         const promise = dataSources[source].fetch(code);
+        this.cache.set(cacheKey, promise);
+      }
+      return await this.cache.get(cacheKey);
+    } catch (error) {
+      console.error(`[StockService] 数据获取失败: ${error.message}`);
+      throw new Error("暂时无法获取股票数据");
+    }
+  }
+  async getStockTimeShare(params) {
+    const source = config.source[1];
+    const cacheKey = `${source}:${params.code}`;
+    try {
+      if (!dataSources[source].fetch) {
+        throw new Error(`Data source "${source}" is not defined`);
+      }
+      if (!this.cache.has(cacheKey)) {
+        const promise = dataSources[source].fetch(params);
+        this.cache.set(cacheKey, promise);
+      }
+      return await this.cache.get(cacheKey);
+    } catch (error) {
+      console.error(`[StockService] 数据获取失败: ${error.message}`);
+      throw new Error("暂时无法获取股票数据");
+    }
+  }
+  async getStockCandlestick(params) {
+    const source = config.source[1];
+    const cacheKey = `${source}:${params.code}`;
+    try {
+      console.log(params);
+      if (!dataSources[source].fetchCandlestick) {
+        throw new Error(`Data source "${source}" is not defined`);
+      }
+      if (!this.cache.has(cacheKey)) {
+        const promise = dataSources[source].fetchCandlestick(params);
         this.cache.set(cacheKey, promise);
       }
       return await this.cache.get(cacheKey);
@@ -15459,7 +15576,23 @@ router.get("/getList", async (req, res) => {
   try {
     const { code } = req.query;
     const decodedData = await stockService.getStockList(code);
-    res.json(decodedData);
+    res.status(200).json({ data: decodedData });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch stock data" });
+  }
+});
+router.get("/getTimeShare", async (req, res) => {
+  try {
+    const decodedData = await stockService.getStockTimeShare(req.query);
+    res.status(200).json({ data: decodedData });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch stock data" });
+  }
+});
+router.get("/getCandlestick", async (req, res) => {
+  try {
+    const decodedData = await stockService.getStockCandlestick(req.query);
+    res.status(200).json({ data: decodedData });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch stock data" });
   }

@@ -4,7 +4,7 @@ import { Layout, Menu } from 'antd'
 import logo from '@/assets/icons/logo.svg'
 import { HomeFilled, PayCircleFilled } from '@ant-design/icons'
 
-export default function BasicLayout() {
+const BasicLayout = () => {
   const { Header, Content, Sider } = Layout
 
   // 左侧菜单配置
@@ -41,3 +41,5 @@ export default function BasicLayout() {
     </Layout>
   )
 }
+
+export default BasicLayout

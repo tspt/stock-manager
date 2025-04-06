@@ -32,10 +32,15 @@ declare module '@/router/index'
 declare module '@/router/guard'
 declare module '@/pages/Dashboard'
 declare module '@/pages/Home'
-declare module '@/components/SvgIcon'
-declare module '@/components/SearchBar'
-declare module '@/components/Loading'
-declare module '@/components/stock/StockChart'
-declare module '@/lib/echarts-core'
+
+declare module '@/components/layout/BasicLayout'
+
+declare module '@/components/common/Chart'
+declare module '@/components/common/Loading'
+declare module '@/components/common/SvgIcon'
+
+declare module '@/lib/echarts/echarts-core'
 declare module '@/lib/echarts/candlestick-config'
 declare module '@/lib/echarts/timeshare-config'
+
+declare module '@/utils/stock'
