@@ -15436,17 +15436,17 @@ class SinaDataSource {
   }
 }
 class TencentDataSource {
+  getQueryString(params) {
+    return `?_var=kline_${params.type}&param=${params.code},${params.type},,,2000,&r=${Math.random()}`;
+  }
   async fetchCandlestick(params) {
     console.log(params);
-    const response2 = await axios.get(
-      `${config.tencent.endpoint}?_var=kline_${params.type}&param=${params.code},${params.type},,,2000,&r=${Math.random()}`,
-      {
-        headers: config.tencent.headers,
-        timeout: config.tencent.timeout
-        // responseType: 'arraybuffer'
-      }
-    );
+    const response2 = await axios.get(`${config.tencent.endpoint + this.getQueryString(params)}`, {
+      headers: config.tencent.headers,
+      timeout: config.tencent.timeout
+    });
     console.log(response2.data);
+    console.log(typeof response2.data);
     return response2.data;
   }
   // async fetchTimeShare(code: string) {
@@ -15552,7 +15552,6 @@ class StockService {
     const source = config.source[1];
     const cacheKey = `${source}:${params.code}`;
     try {
-      console.log(params);
       if (!dataSources[source].fetchCandlestick) {
         throw new Error(`Data source "${source}" is not defined`);
       }

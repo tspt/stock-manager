@@ -12,11 +12,18 @@ export class TencentDataSource implements StockDataSource {
       headers: config.tencent.headers,
       timeout: config.tencent.timeout
     })
+    const result = response.data.split('=')
+    try {
+      const data = JSON.parse(result[1])
+      return data
+    }
     console.log(response.data)
+    console.log(typeof response.data)
     // GBK转UTF-8
     // const decodedData = iconv.decode(Buffer.from(response.data), 'GBK')
     return response.data //this.parseCandlestick(decodedData)
   }
+  
   // async fetchTimeShare(code: string) {
   //   const response = await axios.get(`${config.tencent.endpoint}${code}`, {
   //     headers: config.tencent.headers,
